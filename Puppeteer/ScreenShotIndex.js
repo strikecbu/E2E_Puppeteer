@@ -8,9 +8,9 @@ const fs = require('fs');
         const page = await browser.newPage();
         let originFn = page.screenshot;
         //避免debugger出錯
-        page.screenshot = async function () {
+        page.screenshot = async function (arg) {
             try {
-                return await originFn();
+                return await originFn(arg);
             } catch (e) {
                 return null;
             }
@@ -22,8 +22,8 @@ const fs = require('fs');
         });
         let now = new Date(),
             year = now.getFullYear(),
-            month = now.getMonth() + 1,
-            date = now.getDate(),
+            month = now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1,
+            date = now.getDate() < 10 ? '0' + now.getDate() : now.getDate(),
             hh = now.getHours(),
             mm = now.getMinutes(),
             format = "" + year + month + date + hh + mm;
@@ -48,6 +48,7 @@ const fs = require('fs');
             $('#bod').val('');
             return Promise.resolve();
         });
+
         await page.type("#ino", "M123456789");
         await page.type("#bod", "19800101");
         await page.screenshot({
